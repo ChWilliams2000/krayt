@@ -38,10 +38,11 @@ source ~/.bashrc
 bash scripts/setup.sh
 cp .env.example .env && nano .env
 cp config/settings.example.json ~/.gemini/settings.json && nano ~/.gemini/settings.json
+export GEMINI_API_KEY=$(grep ^GEMINI_API_KEY .env | cut -d= -f2)
 bash scripts/new-engagement.sh hackerone-programname
 nano engagements/hackerone-programname/scope.json
 node scripts/validate-scope.js engagements/hackerone-programname/scope.json
-gemini
+gemini --model gemini-2.0-flash
 ```
 
 ---
@@ -51,14 +52,29 @@ gemini
 | Server | Key Tools |
 |--------|-----------|
 | `recon` | subfinder, amass, httpx, naabu, nmap, dnsx, tlsx, cdncheck, wafw00f, whatweb |
-| `intel` | Shodan InternetDB, Censys, URLScan, VirusTotal, AbuseIPDB, WHOIS, crt.sh |
-| `webapp` | katana, gospider, ffuf, feroxbuster, nuclei, dalfox, sqlmap, corsy, smuggler, ssrf |
+| `intel` | Shodan InternetDB, ip-api geolocation, URLScan, VirusTotal, AbuseIPDB, WHOIS, ASN, crt.sh |
+| `webapp` | katana, gospider, ffuf, feroxbuster, nuclei, dalfox, sqlmap, corsy, smuggler, ssrf, redirect |
 | `api` | arjun, kiterunner, graphw00f, jwt-tool, nikto, testssl.sh, interactsh |
 | `secrets` | trufflehog, gitleaks, jsluice, LinkFinder, subjs, gf, GitHub Search |
 | `osint` | Wayback Machine, GitHub org enum, psbdmp, reverse IP, Google dorks, robots/sitemap |
 | `evidence` | gowitness, HTTP capture, finding notes |
 | `reporting` | HackerOne report drafts, engagement summary |
-| `notify` | Slack, Discord, ntfy.sh push |
+| `notify` | Discord webhook |
+
+---
+
+## API Keys
+
+| Key | Source | Free Tier |
+|-----|--------|-----------|
+| `GEMINI_API_KEY` | [aistudio.google.com](https://aistudio.google.com) | 1M req/day (Flash) |
+| `VIRUSTOTAL_API_KEY` | [virustotal.com](https://virustotal.com) | 500 req/day |
+| `ABUSEIPDB_API_KEY` | [abuseipdb.com](https://abuseipdb.com) | 1,000 checks/day |
+| `URLSCAN_API_KEY` | [urlscan.io](https://urlscan.io) | Generous free tier |
+| `GITHUB_TOKEN` | GitHub → Settings → Developer Settings → Fine-grained PAT | Free |
+| `DISCORD_WEBHOOK_URL` | Discord channel → Integrations → Webhooks | Free |
+
+No paid accounts required. Shodan InternetDB and ip-api are used for IP enrichment — both completely free with no key needed.
 
 ---
 
@@ -79,13 +95,23 @@ Every tool validates domain wildcards, resolves DNS to catch CDN IPs, enforces r
 
 ---
 
+## Token Usage
+
+Run one stage per Gemini CLI session to stay within free tier daily limits. Stage prompts are in `brave-engagement-prompts.md` (or create your own per program). Launch with:
+```bash
+export GEMINI_API_KEY=$(grep ^GEMINI_API_KEY .env | cut -d= -f2)
+gemini --model gemini-2.0-flash
+```
+
+---
+
 ## Audit Log
 ```bash
 # Review findings
-node scripts/review-audit.js audit-logs/engagement-2026-03-17.jsonl FINDING
+node scripts/review-audit.js audit-logs/engagement-$(date +%Y-%m-%d).jsonl FINDING
 
 # Review scope blocks
-node scripts/review-audit.js audit-logs/engagement-2026-03-17.jsonl TOOL_BLOCKED
+node scripts/review-audit.js audit-logs/engagement-$(date +%Y-%m-%d).jsonl TOOL_BLOCKED
 ```
 
 ---
