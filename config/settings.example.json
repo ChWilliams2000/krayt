@@ -1,0 +1,83 @@
+{
+  "mcpServers": {
+    "recon": {
+      "command": "node",
+      "args": ["./servers/recon/index.js"],
+      "env": {
+        "FOFA_EMAIL": "YOUR_FOFA_EMAIL",
+        "FOFA_API_KEY": "YOUR_FOFA_KEY",
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "intel": {
+      "command": "node",
+      "args": ["./servers/intel/index.js"],
+      "env": {
+        "VIRUSTOTAL_API_KEY": "YOUR_VT_KEY",
+        "ABUSEIPDB_API_KEY": "YOUR_ABUSEIPDB_KEY",
+        "URLSCAN_API_KEY": "YOUR_URLSCAN_KEY",
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "webapp": {
+      "command": "node",
+      "args": ["./servers/webapp/index.js"],
+      "env": {
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "api": {
+      "command": "node",
+      "args": ["./servers/api/index.js"],
+      "env": {
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "secrets": {
+      "command": "node",
+      "args": ["./servers/secrets/index.js"],
+      "env": {
+        "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN",
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "osint": {
+      "command": "node",
+      "args": ["./servers/osint/index.js"],
+      "env": {
+        "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN",
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "evidence": {
+      "command": "node",
+      "args": ["./servers/evidence/index.js"],
+      "env": {
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "reporting": {
+      "command": "node",
+      "args": ["./servers/reporting/index.js"],
+      "env": {
+        "GEMINI_API_KEY": "YOUR_GEMINI_KEY",
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs"
+      }
+    },
+    "notify": {
+      "command": "node",
+      "args": ["./servers/notify/index.js"],
+      "env": {
+        "DISCORD_WEBHOOK_URL": "YOUR_DISCORD_WEBHOOK"
+      }
+    }
+  }
+}

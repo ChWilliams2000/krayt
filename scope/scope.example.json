@@ -1,0 +1,24 @@
+{
+  "_comment": "Copy to engagements/PROGRAM_NAME/scope.json. Never commit real engagement files.",
+  "engagement": "Program Name — HackerOne",
+  "program_url": "https://hackerone.com/program-name",
+  "started": "2026-01-01",
+  "in_scope": {
+    "domains": [
+      "example.com",
+      "*.example.com"
+    ],
+    "ip_ranges": [],
+    "url_prefixes": []
+  },
+  "out_of_scope": {
+    "domains": [
+      "careers.example.com",
+      "status.example.com"
+    ],
+    "notes": "No automated scanning of /checkout. No account creation."
+  },
+  "max_requests_per_second": 5,
+  "allowed_test_types": ["recon", "web", "api", "osint", "secrets"],
+  "forbidden_test_types": ["dos", "brute-force", "social_engineering", "physical"]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "krayt-shared",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "minimatch": "^9.0.4",
+    "ip-range-check": "^0.2.0"
+  }
+}
