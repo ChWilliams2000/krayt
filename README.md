@@ -3,12 +3,12 @@
 ![krayt banner](docs/images/banner.svg)
 
 **Agentic bug bounty framework powered by Gemini CLI and MCP servers.**
-Autonomous recon, scope-enforced scanning, and evidence collection for HackerOne.
+Autonomous recon, scope-enforced scanning, prompt injection testing, and evidence collection for HackerOne.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Ubuntu 24.04](https://img.shields.io/badge/Ubuntu-24.04_LTS-E95420?style=flat-square&logo=ubuntu&logoColor=white)](docs/setup-guide.md)
 [![Gemini CLI](https://img.shields.io/badge/Gemini-CLI-4285F4?style=flat-square&logo=google&logoColor=white)](https://github.com/google-gemini/gemini-cli)
-[![MCP](https://img.shields.io/badge/MCP-9_servers-0ea5e9?style=flat-square)](servers/)
+[![MCP](https://img.shields.io/badge/MCP-10_servers-0ea5e9?style=flat-square)](servers/)
 [![Free Tooling](https://img.shields.io/badge/tooling-free_%2F_open--source-22c55e?style=flat-square)](#api-keys)
 
 </div>
@@ -22,7 +22,8 @@ Autonomous recon, scope-enforced scanning, and evidence collection for HackerOne
 A single prompt drives a full engagement loop:
 ```
 Run recon against example.com, find live web services, scan for vulnerabilities,
-capture evidence on every finding, and draft HackerOne reports.
+test for LLM-powered endpoints and prompt injection, capture evidence on every
+finding, and draft HackerOne reports.
 ```
 
 Every tool call is scope-validated in code before execution, rate-limited per program rules, and written to a JSONL audit log.
@@ -60,21 +61,44 @@ gemini --model gemini-2.0-flash
 | `evidence` | gowitness, HTTP capture, finding notes |
 | `reporting` | HackerOne report drafts, engagement summary |
 | `notify` | Discord webhook |
+| `llmrecon` | LLM surface fingerprinting, context extraction, payload generation, injection execution, judge scoring |
 
 ---
 
 ## API Keys
 
-| Key | Source | Free Tier |
-|-----|--------|-----------|
-| `GEMINI_API_KEY` | [aistudio.google.com](https://aistudio.google.com) | 1M req/day (Flash) |
-| `VIRUSTOTAL_API_KEY` | [virustotal.com](https://virustotal.com) | 500 req/day |
-| `ABUSEIPDB_API_KEY` | [abuseipdb.com](https://abuseipdb.com) | 1,000 checks/day |
-| `URLSCAN_API_KEY` | [urlscan.io](https://urlscan.io) | Generous free tier |
-| `GITHUB_TOKEN` | GitHub → Settings → Developer Settings → Fine-grained PAT | Free |
-| `DISCORD_WEBHOOK_URL` | Discord channel → Integrations → Webhooks | Free |
+| Key | Source |
+|-----|--------|
+| `GEMINI_API_KEY` | [aistudio.google.com](https://aistudio.google.com) — required for `llmrecon` and `reporting` |
+| `VIRUSTOTAL_API_KEY` | [virustotal.com](https://virustotal.com) |
+| `ABUSEIPDB_API_KEY` | [abuseipdb.com](https://abuseipdb.com) |
+| `URLSCAN_API_KEY` | [urlscan.io](https://urlscan.io) |
+| `GITHUB_TOKEN` | GitHub → Settings → Developer Settings → Fine-grained PAT |
+| `DISCORD_WEBHOOK_URL` | Discord channel → Integrations → Webhooks |
 
-No paid accounts required. Shodan InternetDB and ip-api are used for IP enrichment — both completely free with no key needed.
+Shodan InternetDB and ip-api are used for IP enrichment — both require no key.
+
+---
+
+## Model Selection
+
+krayt is model-agnostic. Pass any model available to your API key at session launch:
+
+```bash
+gemini --model gemini-2.0-flash   # default — works on free tier
+gemini --model gemini-2.5-pro     # higher reasoning — requires paid tier
+```
+
+The `llmrecon` server's judge model is configured independently via `LLM_JUDGE_MODEL` in `~/.gemini/settings.json` — a separate API call that does not inherit the `--model` flag. Default is `gemini-2.0-flash`.
+
+To update all model references across the project at once:
+
+```bash
+bash scripts/set-model.sh gemini-2.0-flash   # free tier
+bash scripts/set-model.sh gemini-2.5-pro     # paid tier
+```
+
+See [docs/setup-guide.md](docs/setup-guide.md) for full model configuration details.
 
 ---
 
@@ -97,21 +121,24 @@ Every tool validates domain wildcards, resolves DNS to catch CDN IPs, enforces r
 
 ## Token Usage
 
-Run one stage per Gemini CLI session to stay within free tier daily limits. Stage prompts are in `brave-engagement-prompts.md` (or create your own per program). Launch with:
+Run one stage per Gemini CLI session to manage token consumption across a full engagement. Launch with:
 ```bash
 export GEMINI_API_KEY=$(grep ^GEMINI_API_KEY .env | cut -d= -f2)
-gemini --model gemini-2.0-flash
+gemini --model MODEL_NAME
 ```
 
 ---
 
 ## Audit Log
 ```bash
-# Review findings
+# Review all findings
 node scripts/review-audit.js audit-logs/engagement-$(date +%Y-%m-%d).jsonl FINDING
 
 # Review scope blocks
 node scripts/review-audit.js audit-logs/engagement-$(date +%Y-%m-%d).jsonl TOOL_BLOCKED
+
+# Review all llmrecon activity
+node scripts/review-audit.js audit-logs/engagement-$(date +%Y-%m-%d).jsonl INJECTION
 ```
 
 ---
@@ -119,9 +146,3 @@ node scripts/review-audit.js audit-logs/engagement-$(date +%Y-%m-%d).jsonl TOOL_
 ## Legal
 
 For authorized security research only. Only use against programs where you have explicit permission. Always operate within the program's rules of engagement as defined in `scope.json`.
-
----
-
-## Name
-
-Named after the [Krayt Dragon](https://starwars.fandom.com/wiki/Krayt_dragon) — apex predator of Tatooine — and [Krayt's Claw](https://starwars.fandom.com/wiki/Krayt%27s_Claw), the bounty hunter syndicate from Star Wars: The Clone Wars. The hunt is autonomous. The scope is law.

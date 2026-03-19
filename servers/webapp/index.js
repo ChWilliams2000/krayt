@@ -19,7 +19,7 @@ server.tool("crawl_katana",
     const check = isURLInScope(url);
     if (!check.allowed) return { content: [{ type: "text", text: `BLOCKED: ${check.reason}` }], isError: true };
     await limiter.acquire();
-    const r = await safeExec(`katana -u ${url} -d ${depth} -c ${concurrency} ${headless ? "-headless" : ""} -silent -jc -kf all -json`, { timeout: 300000 });
+    const r = await safeExec(`katana -u ${url} -d ${depth} -c ${concurrency} ${headless ? "-headless" : ""} -silent -jc -kf all -j`, { timeout: 300000 });
     return { content: [{ type: "text", text: JSON.stringify({ base: url, endpoints: parseJsonLines(r.stdout), count: parseJsonLines(r.stdout).length }) }] };
   }
 );
@@ -81,7 +81,7 @@ server.tool("nuclei_scan",
     const FORBIDDEN = ["dos", "fuzz", "brute-force", "intrusive"];
     if (tags) { const bad = tags.split(",").filter(t => FORBIDDEN.includes(t.trim())); if (bad.length) return { content: [{ type: "text", text: `BLOCKED: Forbidden tags: ${bad.join(",")}` }], isError: true }; }
     await limiter.acquire();
-    const r = await safeExec(`nuclei -u ${target} ${tags ? `-tags ${tags}` : ""} ${templates ? `-t ${templates}` : ""} -severity ${severity} -silent -json -timeout 30`, { timeout: 600000 });
+    const r = await safeExec(`nuclei -u ${target} ${tags ? `-tags ${tags}` : ""} ${templates ? `-t ${templates}` : ""} -severity ${severity} -silent -j -timeout 30`, { timeout: 600000 });
     const findings = parseJsonLines(r.stdout);
     findings.forEach(f => audit.finding("nuclei_scan", target, f.info?.severity, { template_id: f["template-id"], name: f.info?.name, matched: f["matched-at"] }));
     return { content: [{ type: "text", text: JSON.stringify({ target, findings }) }] };

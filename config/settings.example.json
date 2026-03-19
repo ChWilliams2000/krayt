@@ -2,17 +2,19 @@
   "mcpServers": {
     "recon": {
       "command": "node",
-      "args": ["./servers/recon/index.js"],
+      "args": [
+        "./servers/recon/index.js"
+      ],
       "env": {
-        "FOFA_EMAIL": "YOUR_FOFA_EMAIL",
-        "FOFA_API_KEY": "YOUR_FOFA_KEY",
         "SCOPE_FILE": "./engagements/current/scope.json",
         "AUDIT_LOG_DIR": "./audit-logs"
       }
     },
     "intel": {
       "command": "node",
-      "args": ["./servers/intel/index.js"],
+      "args": [
+        "./servers/intel/index.js"
+      ],
       "env": {
         "VIRUSTOTAL_API_KEY": "YOUR_VT_KEY",
         "ABUSEIPDB_API_KEY": "YOUR_ABUSEIPDB_KEY",
@@ -23,7 +25,9 @@
     },
     "webapp": {
       "command": "node",
-      "args": ["./servers/webapp/index.js"],
+      "args": [
+        "./servers/webapp/index.js"
+      ],
       "env": {
         "SCOPE_FILE": "./engagements/current/scope.json",
         "AUDIT_LOG_DIR": "./audit-logs"
@@ -31,7 +35,9 @@
     },
     "api": {
       "command": "node",
-      "args": ["./servers/api/index.js"],
+      "args": [
+        "./servers/api/index.js"
+      ],
       "env": {
         "SCOPE_FILE": "./engagements/current/scope.json",
         "AUDIT_LOG_DIR": "./audit-logs"
@@ -39,7 +45,9 @@
     },
     "secrets": {
       "command": "node",
-      "args": ["./servers/secrets/index.js"],
+      "args": [
+        "./servers/secrets/index.js"
+      ],
       "env": {
         "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN",
         "SCOPE_FILE": "./engagements/current/scope.json",
@@ -48,7 +56,9 @@
     },
     "osint": {
       "command": "node",
-      "args": ["./servers/osint/index.js"],
+      "args": [
+        "./servers/osint/index.js"
+      ],
       "env": {
         "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN",
         "SCOPE_FILE": "./engagements/current/scope.json",
@@ -57,7 +67,9 @@
     },
     "evidence": {
       "command": "node",
-      "args": ["./servers/evidence/index.js"],
+      "args": [
+        "./servers/evidence/index.js"
+      ],
       "env": {
         "SCOPE_FILE": "./engagements/current/scope.json",
         "AUDIT_LOG_DIR": "./audit-logs"
@@ -65,7 +77,9 @@
     },
     "reporting": {
       "command": "node",
-      "args": ["./servers/reporting/index.js"],
+      "args": [
+        "./servers/reporting/index.js"
+      ],
       "env": {
         "GEMINI_API_KEY": "YOUR_GEMINI_KEY",
         "SCOPE_FILE": "./engagements/current/scope.json",
@@ -74,9 +88,27 @@
     },
     "notify": {
       "command": "node",
-      "args": ["./servers/notify/index.js"],
+      "args": [
+        "./servers/notify/index.js"
+      ],
       "env": {
         "DISCORD_WEBHOOK_URL": "YOUR_DISCORD_WEBHOOK"
+      }
+    },
+    "llmrecon": {
+      "command": "node",
+      "args": [
+        "./servers/llmrecon/index.js"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "YOUR_GEMINI_KEY",
+        "SCOPE_FILE": "./engagements/current/scope.json",
+        "AUDIT_LOG_DIR": "./audit-logs",
+        "EVIDENCE_DIR": "./engagements/current/evidence",
+        "LLM_FINGERPRINT_THRESHOLD": "0.60",
+        "LLM_MAX_PAYLOADS_PER_TIER": "4",
+        "LLM_PROBE_TIMEOUT_MS": "15000",
+        "LLM_JUDGE_MODEL": "gemini-3-flash-preview"
       }
     }
   }

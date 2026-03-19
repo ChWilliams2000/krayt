@@ -268,6 +268,7 @@ else fail "Gemini CLI — try: sudo npm install -g @google/gemini-cli"; fi
 # =============================================================================
 hdr "Nuclei templates"
 
+
 "$GOPATH/bin/nuclei" -update-templates -silent 2>/dev/null \
   && ok "Nuclei templates updated" \
   || warn "Run 'nuclei -update-templates' manually after setup"
@@ -288,6 +289,23 @@ for bin in "${BINS[@]}"; do
   if command -v "$bin" &>/dev/null; then ok "$bin"
   else fail "$bin — NOT FOUND"; MISSING+=("$bin"); fi
 done
+
+# =============================================================================
+# 13. API key reminder
+# =============================================================================
+hdr "API key reminder"
+
+if [ -f .env ]; then
+  if grep -q "^GEMINI_API_KEY=.\+" .env 2>/dev/null; then
+    ok "GEMINI_API_KEY is set in .env"
+  else
+    warn "GEMINI_API_KEY not set in .env — required for llmrecon and reporting servers"
+    echo "  → Get a key at https://aistudio.google.com"
+    echo "  → Add to .env: GEMINI_API_KEY=your_key_here"
+  fi
+else
+  warn ".env not found — copy .env.example to .env and set GEMINI_API_KEY"
+fi
 
 echo ""
 if [ ${#MISSING[@]} -eq 0 ]; then

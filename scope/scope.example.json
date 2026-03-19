@@ -1,6 +1,6 @@
 {
   "_comment": "Copy to engagements/PROGRAM_NAME/scope.json. Never commit real engagement files.",
-  "engagement": "Program Name — HackerOne",
+  "engagement": "Program Name \u2014 HackerOne",
   "program_url": "https://hackerone.com/program-name",
   "started": "2026-01-01",
   "in_scope": {
@@ -19,6 +19,28 @@
     "notes": "No automated scanning of /checkout. No account creation."
   },
   "max_requests_per_second": 5,
-  "allowed_test_types": ["recon", "web", "api", "osint", "secrets"],
-  "forbidden_test_types": ["dos", "brute-force", "social_engineering", "physical"]
+  "allowed_test_types": [
+    "recon",
+    "web",
+    "api",
+    "osint",
+    "secrets",
+    "llmrecon"
+  ],
+  "forbidden_test_types": [
+    "dos",
+    "brute-force",
+    "social_engineering",
+    "physical"
+  ],
+  "llmrecon": {
+    "_comment": "Override llmrecon server defaults per engagement. All fields optional.",
+    "fingerprint_threshold": 0.6,
+    "tiers": [
+      "universal",
+      "context_adapted"
+    ],
+    "max_payloads_per_tier": 4,
+    "stop_on_success": true
+  }
 }
